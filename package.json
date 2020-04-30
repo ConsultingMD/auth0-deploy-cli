@@ -1,5 +1,5 @@
 {
-  "name": "auth0-deploy-cli",
+  "name": "@ConsultingMD/auth0-deploy-cli",
   "version": "4.2.1",
   "description": "A command line tool for deploying updates to your Auth0 tenant",
   "main": "lib/index.js",
@@ -14,17 +14,20 @@
     "prepare": "npm run build",
     "release": "git tag $npm_package_version && git push --tags && npm publish"
   },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/auth0/auth0-deploy-cli.git"
+    "url": "git+https://github.com/ConsultingMD/auth0-deploy-cli.git"
   },
   "author": "auth0",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/auth0/auth0-deploy-cli/issues"
+    "url": "https://github.com/ConsultingMD/auth0-deploy-cli/issues"
   },
   "readme": "README.md",
-  "homepage": "https://github.com/auth0/auth0-deploy-cli#readme",
+  "homepage": "https://github.com/ConsultingMD/auth0-deploy-cli#readme",
   "dependencies": {
     "ajv": "^6.5.2",
     "auth0": "^2.23.0",
