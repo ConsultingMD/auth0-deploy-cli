@@ -7,7 +7,7 @@ import { isFile, getFiles, existsMustBeDir, loadJSON, sanitize, ensureProp } fro
 
 function parse(context) {
   const connectionsFolder = path.join(context.filePath, constants.CONNECTIONS_DIRECTORY);
-  if (!existsMustBeDir(connectionsFolder)) return { connections: [] }; // Skip
+  if (!existsMustBeDir(connectionsFolder)) return { connections: undefined }; // Skip
 
   const foundFiles = getFiles(connectionsFolder, [ '.json' ]);
 
