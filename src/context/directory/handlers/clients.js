@@ -6,10 +6,18 @@ import log from '../../../logger';
 import { isFile, getFiles, existsMustBeDir, loadJSON, sanitize, clearClientArrays } from '../../../utils';
 
 function parse(context) {
+  var foundFiles = [];
+
   const clientsFolder = path.join(context.filePath, constants.CLIENTS_DIRECTORY);
   if (!existsMustBeDir(clientsFolder)) return { clients: undefined }; // Skip
+  foundFiles = foundFiles.concat(getFiles(clientsFolder, [ '.json' ]));
 
-  const foundFiles = getFiles(clientsFolder, [ '.json' ]);
+  if (context.config.ADDITIONAL_CLIENTS_DIRECTORY) {
+    const additionalClientsFolder = path.join(context.filePath, context.config.ADDITIONAL_CLIENTS_DIRECTORY);
+    if (existsMustBeDir(additionalClientsFolder)) {
+      foundFiles = foundFiles.concat(getFiles(additionalClientsFolder, [ '.json' ]));
+    }
+  }
 
   const clients = foundFiles
     .map((f) => {
