@@ -36,6 +36,32 @@ describe('#directory context clients', () => {
     expect(context.assets.clients).to.deep.equal(target);
   });
 
+  it('should process additional clients directory', async () => {
+    const additionalClientsDirectory = 'additional-clients';
+
+    const files = {
+      [constants.CLIENTS_DIRECTORY]: {
+        'default-client.json': '{ "app_type": @@appType@@, "name": "defaultClient" }'
+      },
+      [additionalClientsDirectory]: {
+        'another-client.json': '{ "app_type": @@appType@@, "name": "anotherClient" }'
+      }
+    };
+
+    const repoDir = path.join(testDataDir, 'directory', 'clients1');
+    createDir(repoDir, files);
+
+    const config = { AUTH0_INPUT_FILE: repoDir, ADDITIONAL_CLIENTS_DIRECTORY: additionalClientsDirectory, AUTH0_KEYWORD_REPLACE_MAPPINGS: { appType: 'spa' } };
+    const context = new Context(config, mockMgmtClient());
+    await context.load();
+
+    const target = [
+      { app_type: 'spa', name: 'defaultClient' },
+      { app_type: 'spa', name: 'anotherClient' }
+    ];
+    expect(context.assets.clients).to.deep.equal(target);
+  });
+
   it('should ignore unknown file', async () => {
     const files = {
       [constants.CLIENTS_DIRECTORY]: {
