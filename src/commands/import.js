@@ -50,13 +50,19 @@ export default async function deploy(params) {
 
   await tools.deploy(context.assets, context.mgmtClient, config);
 
-  await updateEnabledClientsForDatabaseConnection(context);
-  log.info(`Enabled database connection for '${context.config.AUTH0_DATABASE_CONNECTION_CLIENT_METAKEY}' clients`)
+  if (context.config.AUTH0_DATABASE_CONNECTION_ID && context.config.AUTH0_DATABASE_CONNECTION_CLIENT_METAKEY) {
+    await updateEnabledClientsForDatabaseConnection(context);
+    log.info(`Enabled database connection for '${context.config.AUTH0_DATABASE_CONNECTION_CLIENT_METAKEY}' clients`)
+  }
 
   log.info('Import Successful');
 }
 
 async function updateEnabledClientsForDatabaseConnection({ mgmtClient, config}) {
+  const connection = await mgmtClient.getConnection({ id: config.AUTH0_DATABASE_CONNECTION_ID })
+
+  if (!connection) return
+
   const clients = await mgmtClient.getClients({ app_type: 'regular_web' });
 
   const filteredClients = clients.filter(client => {
@@ -64,9 +70,9 @@ async function updateEnabledClientsForDatabaseConnection({ mgmtClient, config}) 
     return metadata[config.AUTH0_DATABASE_CONNECTION_CLIENT_METAKEY] === 'true'
   })
 
-  const filteredClientIds = filteredClients.map(client => client.client_id)
+  if (!filteredClients.length) return
 
-  const connection = await mgmtClient.getConnection({ id: config.AUTH0_DATABASE_CONNECTION_ID })
+  const filteredClientIds = filteredClients.map(client => client.client_id)
 
   const currentEnabledClients = connection.enabled_clients || [];
   const updatedEnabledClients = [...new Set([...currentEnabledClients, ...filteredClientIds])];
