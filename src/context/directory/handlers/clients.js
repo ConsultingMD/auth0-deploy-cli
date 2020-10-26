@@ -9,15 +9,19 @@ function parse(context) {
   var foundFiles = [];
 
   const clientsFolder = path.join(context.filePath, constants.CLIENTS_DIRECTORY);
-  if (!existsMustBeDir(clientsFolder)) return { clients: undefined }; // Skip
-  foundFiles = foundFiles.concat(getFiles(clientsFolder, [ '.json' ]));
+  if (existsMustBeDir(clientsFolder)) {
+    foundFiles = foundFiles.concat(getFiles(clientsFolder, [ '.json' ]));
+  }
 
-  if (context.config.ADDITIONAL_CLIENTS_DIRECTORY) {
-    const additionalClientsFolder = path.join(context.filePath, context.config.ADDITIONAL_CLIENTS_DIRECTORY);
+  if (context.config.AUTH0_ADDITIONAL_CLIENTS_DIRECTORY) {
+    const additionalClientsFolder = path.join(context.filePath, context.config.AUTH0_ADDITIONAL_CLIENTS_DIRECTORY);
+
     if (existsMustBeDir(additionalClientsFolder)) {
       foundFiles = foundFiles.concat(getFiles(additionalClientsFolder, [ '.json' ]));
     }
   }
+
+  if (!foundFiles.length) return { clients: undefined }; // Skip
 
   const clients = foundFiles
     .map((f) => {

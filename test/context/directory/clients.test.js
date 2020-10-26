@@ -36,7 +36,7 @@ describe('#directory context clients', () => {
     expect(context.assets.clients).to.deep.equal(target);
   });
 
-  it('should process additional clients directory', async () => {
+  it('should process additional clients directory with clients directory', async () => {
     const additionalClientsDirectory = 'additional-clients';
 
     const files = {
@@ -49,15 +49,39 @@ describe('#directory context clients', () => {
     };
 
     const repoDir = path.join(testDataDir, 'directory', 'clients1');
+    cleanThenMkdir(repoDir);
     createDir(repoDir, files);
 
-    const config = { AUTH0_INPUT_FILE: repoDir, ADDITIONAL_CLIENTS_DIRECTORY: additionalClientsDirectory, AUTH0_KEYWORD_REPLACE_MAPPINGS: { appType: 'spa' } };
+    const config = { AUTH0_INPUT_FILE: repoDir, AUTH0_ADDITIONAL_CLIENTS_DIRECTORY: additionalClientsDirectory, AUTH0_KEYWORD_REPLACE_MAPPINGS: { appType: 'spa' } };
     const context = new Context(config, mockMgmtClient());
     await context.load();
 
     const target = [
       { app_type: 'spa', name: 'defaultClient' },
       { app_type: 'spa', name: 'anotherClient' }
+    ];
+    expect(context.assets.clients).to.deep.equal(target);
+  });
+
+  it('should process additional clients directory w/o clients directory', async () => {
+    const additionalClientsDirectory = 'additional-clients';
+
+    const files = {
+      [additionalClientsDirectory]: {
+        'client.json': '{ "app_type": @@appType@@, "name": "client" }'
+      }
+    };
+
+    const repoDir = path.join(testDataDir, 'directory', 'clients1');
+    cleanThenMkdir(repoDir);
+    createDir(repoDir, files);
+
+    const config = { AUTH0_INPUT_FILE: repoDir, AUTH0_ADDITIONAL_CLIENTS_DIRECTORY: additionalClientsDirectory, AUTH0_KEYWORD_REPLACE_MAPPINGS: { appType: 'spa' } };
+    const context = new Context(config, mockMgmtClient());
+    await context.load();
+
+    const target = [
+      { app_type: 'spa', name: 'client' }
     ];
     expect(context.assets.clients).to.deep.equal(target);
   });
