@@ -50,7 +50,8 @@ export default async function deploy(params) {
 
   await tools.deploy(context.assets, context.mgmtClient, config);
 
-  if (context.config.AUTH0_DATABASE_CONNECTION_ID && context.config.AUTH0_DATABASE_CONNECTION_CLIENT_METAKEY) {
+  if (context.config.AUTH0_ALLOW_AUTO_ENABLE_DATABASE_CONNECTION) {
+    log.info('Attempting to automatically enable the database connection for some clients');
     await updateEnabledClientsForDatabaseConnection(context);
     log.info(`Enabled database connection for '${context.config.AUTH0_DATABASE_CONNECTION_CLIENT_METAKEY}' clients`)
   }
