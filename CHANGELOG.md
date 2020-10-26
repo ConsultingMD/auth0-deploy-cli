@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.2.3] - 2020-10-26
+### Added
+- Add support for additional `clients` directory using `AUTH0_ADDITIONAL_CLIENTS_DIRECTORY`.
+- Add ability to automatically add a `client` with a certain metadata key to be enabled for `database-connection` during import.
+
+## [4.2.2] - 2020-05-01
+### Added
+- Add support for custom `connections` directory using `AUTH0_CONNECTIONS_DIRECTORY`.
+
 ## [4.2.1] - 2020-04-06
 ### Fixed
 - Fixed rules' reorder to avoid order collisions by updating `auth0-source-control-extension-tools`
